@@ -537,9 +537,12 @@ open class SlideMenuController: UIViewController, UIGestureRecognizerDelegate {
             }
             }) { [weak self](Bool) -> Void in
                 if let strongSelf = self {
-                    strongSelf.disableContentInteraction()
-                    strongSelf.leftViewController?.endAppearanceTransition()
-                    strongSelf.delegate?.leftDidOpen?()
+                    if !strongSelf.isLeftMenuOpen {
+                        strongSelf.disableContentInteraction()
+                        strongSelf.leftViewController?.endAppearanceTransition()
+                        strongSelf.delegate?.leftDidOpen?()
+                        strongSelf.isLeftMenuOpen = true
+                    }
                 }
         }
     }
@@ -603,6 +606,7 @@ open class SlideMenuController: UIViewController, UIGestureRecognizerDelegate {
                     strongSelf.enableContentInteraction()
                     strongSelf.leftViewController?.endAppearanceTransition()
                     strongSelf.delegate?.leftDidClose?()
+                    strongSelf.isLeftMenuOpen = false
                 }
         }
     }
@@ -650,6 +654,8 @@ open class SlideMenuController: UIViewController, UIGestureRecognizerDelegate {
             openLeft()
         }
     }
+    
+    open var isLeftMenuOpen: Bool = false
     
     open func isLeftOpen() -> Bool {
         return leftViewController != nil && leftContainerView.frame.origin.x == 0.0
